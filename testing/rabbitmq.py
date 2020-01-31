@@ -1,27 +1,25 @@
-import binascii
 import os
 import stat
 import signal
 import subprocess
 import time
-import urllib.request
-import json
-from datetime import datetime
-import re
-import copy
 import random
 import string
 import psutil
-from ast import literal_eval
 
 from testing.common.database import (
-    Database, DatabaseFactory, get_path_of, get_unused_port
+    Database, DatabaseFactory, get_unused_port
 )
 
 __all__ = ['RabbitMQServer', 'RabbitMQServerFactory']
 
+SEARCH_PATHS = [
+    '/usr/lib/rabbitmq/bin',  # archlinux
+    '/usr/local/opt/rabbitmq/sbin'  # macOS homebrew
+]
+
 # https://www.rabbitmq.com/configure.html#customise-environment
-SCRIPT_SOURCE = """#!/bin/env bash
+SCRIPT_SOURCE = """#!/usr/bin/env bash
 export RABBITMQ_NODENAME={2}
 export RABBITMQ_NODE_IP_ADDRESS=127.0.0.1
 export RABBITMQ_NODE_PORT={3}
@@ -56,7 +54,13 @@ class RabbitMQServer(Database):
     def initialize(self):
         self.rabbitmq_script_dir = self.settings.get('rabbitmq_script_dir')
         if self.rabbitmq_script_dir is None:
-            self.rabbitmq_script_dir = '/usr/lib/rabbitmq/bin'
+            for path in SEARCH_PATHS:
+                if os.path.exists(os.path.join(path, 'rabbitmq-server')):
+                    self.rabbitmq_script_dir = path
+                    break
+            else:
+                raise Exception("Unable to automatically find the location of 'rabbitmq-server'."
+                                "Please set `rabbitmq_script_dir` manually")
         if not os.path.exists(os.path.join(self.rabbitmq_script_dir, 'rabbitmq-server')):
             raise Exception("Unable to find 'rabbitmq-server' in '{}'".format(self.rabbitmq_script_dir))
         if not os.path.exists(os.path.join(self.rabbitmq_script_dir, 'rabbitmqctl')):
@@ -196,6 +200,7 @@ class RabbitMQServer(Database):
         print(">>>>>>", log_file, "<<<<<<")
         with open(log_file) as f:
             return f.read()
+
 
 class RabbitMQServerFactory(DatabaseFactory):
     target_class = RabbitMQServer

@@ -35,7 +35,7 @@ Create RabbitMQServer instance using ``testing.rabbitmq.RabbitMQServer``::
   import testing.rabbitmq
   import pika
 
-  # Lanuch new Parity-Ethereum server
+  # Lanuch new RabbitMQ server
   with testing.rabbitmq.RabbitMQServer() as rmq:
       connection = pika.BlockingConnection(
           pika.ConnectionParameters(**rmq.dsn()))
