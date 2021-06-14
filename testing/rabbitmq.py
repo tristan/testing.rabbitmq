@@ -155,7 +155,7 @@ class RabbitMQServer(Database):
         if alive:
             # send SIGKILL
             for p in alive:
-                print("process {} survived SIGTERM; trying SIGKILL" % p)
+                print("process {} survived SIGTERM; trying SIGKILL".format(p))
                 try:
                     p.kill()
                 except psutil.NoSuchProcess:
@@ -164,7 +164,7 @@ class RabbitMQServer(Database):
             if alive:
                 # give up
                 for p in alive:
-                    print("process {} survived SIGKILL; giving up" % p)
+                    print("process {} survived SIGKILL; giving up".format(p))
                     raise RuntimeError("*** failed to shutdown child process ***")
 
     @staticmethod
