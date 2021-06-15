@@ -30,7 +30,7 @@ tests_require = [
 
 setup(
     name='testing.rabbitmq',
-    version='1.0.1',
+    version='1.0.2',
     description='automatically setups a rabbitmq server instance for use in tests',
     long_description=open('README.rst').read(),
     classifiers=classifiers,

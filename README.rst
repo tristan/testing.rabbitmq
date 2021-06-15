@@ -63,3 +63,11 @@ History
 1.0.0 (2019-08-19)
 -------------------
 * First release
+
+1.0.1 (2020-01-31)
+-------------------
+* Update runner script header to fix issues running on macOS
+
+1.0.2 (2021-06-15)
+-------------------
+*  Fix log string formatting in `_terminate_process()`
